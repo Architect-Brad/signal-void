@@ -1,0 +1,6 @@
+{
+  "name": "SIGNAL/VOID",
+  "description": "A comprehensive hacking simulation and signal archaeology thriller. Implements realistic attack lifecycles, noise-based detection, and forensic methodologies. Navigate the stratified internet of 2047, use realistic tooling like Nmap and MSFConsole, and uncover the truth behind the Lazarus dead letter.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
