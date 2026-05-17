@@ -1,0 +1,48 @@
+{
+  "name": "SIGNAL/VOID: Cyber Archaeology",
+  "short_name": "SIGNAL/VOID",
+  "description": "Navigate the stratified internet of 2047. Realistic attack lifecycles, signal archaeology, and the truth behind the Lazarus dead letter.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00ff41",
+  "orientation": "any",
+  "categories": ["games", "simulation", "productivity"],
+  "icons": [
+    {
+      "src": "https://img.icons8.com/wired/512/00ff41/terminal.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://img.icons8.com/wired/192/00ff41/terminal.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Neural Link",
+      "short_name": "Neural",
+      "description": "Initialize Bit direct link",
+      "url": "/?tab=neural",
+      "icons": [{ "src": "https://img.icons8.com/wired/192/00ff41/brain.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Signal Feed",
+      "short_name": "Feed",
+      "description": "Check the global activity feed",
+      "url": "/?tab=feed",
+      "icons": [{ "src": "https://img.icons8.com/wired/192/00ff41/rss.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200",
+      "sizes": "1200x800",
+      "type": "image/jpeg",
+      "label": "The Neural Terminal"
+    }
+  ]
+}
