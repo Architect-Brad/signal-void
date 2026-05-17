@@ -1,27 +1,661 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>SIGNAL/VOID // The Undertow</title>
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="apple-touch-icon" href="https://img.icons8.com/wired/192/00ff41/terminal.png" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('[SIGNAL_VOID] KERNEL_SW_ACTIVE', reg.scope))
-            .catch(err => console.error('[SIGNAL_VOID] KERNEL_SW_FAILED', err));
-        });
-      }
-    </script>
-  </body>
-</html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A forensic hacking thriller. Browser-native. Navigate the stratified internet of 2047, excavate dead signals, and uncover the truth before an adaptive AI learns your every move.">
+<meta property="og:title" content="SIGNAL/VOID — The Weight of Dead Light">
+<meta property="og:description" content="A forensic hacking thriller. Browser-native. No install required.">
+<meta property="og:type" content="website">
+<title>SIGNAL/VOID — The Weight of Dead Light</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green:#00ff41;--amber:#ffaa00;--red:#ff3131;
+  --dim:#0a0a0a;--surface:#0d0d0d;--border:#1a1a1a;
+}
+html{scroll-behavior:smooth}
+body{
+  background:#000;color:#ccc;
+  font-family:'Share Tech Mono',monospace;
+  overflow-x:hidden;cursor:crosshair;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.015) 2px,rgba(0,255,65,0.015) 4px);
+  pointer-events:none;z-index:9999;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9998;opacity:0.4;
+}
 
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(0,0,0,0.92);border-bottom:1px solid #111;
+  padding:0 2rem;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:blur(8px);
+}
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;
+  letter-spacing:0.15em;color:var(--green);text-decoration:none;
+}
+.nav-logo span{color:var(--amber);}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{
+  color:#555;font-size:11px;letter-spacing:0.15em;
+  text-decoration:none;text-transform:uppercase;transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--green);}
+.nav-cta{
+  background:transparent;border:1px solid var(--green);
+  color:var(--green);padding:6px 16px;
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  cursor:pointer;transition:all 0.2s;text-decoration:none;
+}
+.nav-cta:hover{background:var(--green);color:#000;}
+
+/* HERO */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:6rem 2rem 4rem;position:relative;overflow:hidden;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,255,65,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,65,0.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 40%,transparent 100%);
+}
+.hero-packet{
+  font-size:11px;letter-spacing:0.2em;color:#333;
+  text-transform:uppercase;margin-bottom:2rem;
+  border:1px solid #111;padding:6px 14px;
+  animation:blink-border 3s infinite;
+}
+@keyframes blink-border{
+  0%,100%{border-color:#111;}50%{border-color:#1a3a1a;}
+}
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(72px,14vw,160px);
+  letter-spacing:0.06em;line-height:0.9;text-align:center;
+  color:var(--green);text-shadow:0 0 80px rgba(0,255,65,0.15);
+}
+.hero-title .slash{color:var(--amber);}
+.hero-subtitle{
+  font-family:'Courier Prime',monospace;font-style:italic;
+  font-size:clamp(14px,2vw,18px);color:#444;
+  margin-top:1.5rem;letter-spacing:0.05em;text-align:center;
+}
+.hero-tagline{
+  margin-top:0.6rem;font-size:12px;letter-spacing:0.25em;
+  color:#2a2a2a;text-transform:uppercase;text-align:center;
+}
+.dead-letter{
+  margin:3rem 0 2rem;background:#040a04;border:1px solid #1a2a1a;
+  padding:1.5rem 2rem;max-width:560px;width:100%;position:relative;
+}
+.dead-letter::before{
+  content:'PACKET_ID: LAZ_DEADLETTER_001';
+  position:absolute;top:-10px;left:16px;
+  background:#000;padding:0 8px;font-size:9px;color:#2a4a2a;letter-spacing:0.15em;
+}
+.dead-letter .t-out{font-size:13px;color:#3a5a3a;line-height:1.8;}
+.dead-letter .quote{
+  font-family:'Courier Prime',monospace;font-style:italic;
+  color:var(--green);font-size:15px;margin:0.8rem 0;opacity:0.85;
+}
+.dead-letter .sig{font-size:10px;color:#2a4a2a;letter-spacing:0.2em;margin-top:1rem;text-transform:uppercase;}
+.dead-letter .ts{font-size:9px;color:#1a2a1a;margin-top:0.3rem;}
+.gradient-meter{max-width:400px;width:100%;margin:2rem 0 0;}
+.gm-label{
+  display:flex;justify-content:space-between;
+  font-size:10px;letter-spacing:0.15em;color:#222;
+  margin-bottom:0.4rem;text-transform:uppercase;
+}
+.gm-bar{height:2px;background:#0d0d0d;position:relative;overflow:hidden;}
+.gm-fill{
+  position:absolute;left:0;top:0;bottom:0;background:var(--green);
+  animation:trace-grow 4s ease-in-out infinite;
+}
+@keyframes trace-grow{
+  0%{width:0;background:var(--green);}
+  60%{width:72%;background:var(--amber);}
+  85%{width:92%;background:var(--red);}
+  90%{width:100%;background:var(--red);}
+  91%{width:0;background:var(--green);}
+  100%{width:0;background:var(--green);}
+}
+.paths{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  max-width:600px;width:100%;margin:2rem 0 1rem;background:#111;
+}
+.path{
+  background:#000;padding:1.5rem;
+  display:flex;flex-direction:column;gap:0.8rem;
+  cursor:pointer;text-decoration:none;transition:background 0.2s;
+}
+.path:hover{background:#040a04;}
+.path-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;}
+.path.beginner .path-label{color:#444;}
+.path.hardcore .path-label{color:#2a4a2a;}
+.path-title{font-size:16px;letter-spacing:0.05em;}
+.path.beginner .path-title{color:#666;}
+.path.hardcore .path-title{color:var(--green);}
+.path-desc{font-size:11px;line-height:1.6;color:#333;}
+.path-arrow{font-size:20px;margin-top:auto;padding-top:0.5rem;align-self:flex-end;}
+.path.beginner .path-arrow{color:#333;}
+.path.hardcore .path-arrow{color:var(--green);}
+.scroll-hint{
+  font-size:10px;letter-spacing:0.2em;color:#222;
+  text-transform:uppercase;margin-top:1rem;
+  animation:pulse-up 2s infinite;
+}
+@keyframes pulse-up{
+  0%,100%{opacity:0.3;transform:translateY(0);}
+  50%{opacity:0.7;transform:translateY(-4px);}
+}
+
+/* SHARED SECTION */
+section{padding:5rem 2rem;max-width:1000px;margin:0 auto;}
+.section-label{
+  font-size:9px;letter-spacing:0.3em;text-transform:uppercase;
+  color:#2a4a2a;margin-bottom:0.8rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.section-label::before{content:'//';color:#1a2a1a;}
+.section-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(36px,6vw,64px);letter-spacing:0.08em;
+  color:#ddd;line-height:1;margin-bottom:2rem;
+}
+.section-title span{color:var(--green);}
+.divider{height:1px;background:#0d0d0d;border:none;margin:0;}
+
+/* STORY */
+#story .timeline{
+  display:flex;flex-direction:column;border-left:1px solid #1a1a1a;margin-left:1rem;
+}
+.tl-item{padding:1.5rem 0 1.5rem 2rem;border-bottom:1px solid #0d0d0d;position:relative;}
+.tl-item::before{
+  content:'';position:absolute;left:-5px;top:1.8rem;
+  width:9px;height:9px;border:1px solid #333;background:#000;
+}
+.tl-item:last-child{border-bottom:none;}
+.tl-year{font-size:11px;letter-spacing:0.2em;color:var(--amber);margin-bottom:0.4rem;}
+.tl-text{font-size:13px;line-height:1.8;color:#444;}
+.tl-text em{color:#666;font-style:italic;}
+.tl-highlight{font-size:12px;color:var(--green);margin-top:0.6rem;line-height:1.7;}
+.terminal-demo{
+  background:#040a04;border:1px solid #0d1a0d;
+  padding:1.5rem;font-size:12px;line-height:1.8;
+  max-width:560px;width:100%;margin:2rem 0;
+}
+.t-line{color:#1a3a1a;}
+.t-cmd{color:var(--green);}
+.t-out{color:#2a5a2a;}
+.t-warn{color:var(--amber);}
+.t-prompt{color:#1a3a1a;}
+.cursor{animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* FEATURES */
+#features .feat-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:#0d0d0d;border:1px solid #0d0d0d;
+}
+.feat{background:#000;padding:1.5rem;transition:background 0.2s;}
+.feat:hover{background:#040a04;}
+.feat-icon{font-size:11px;color:var(--green);letter-spacing:0.15em;margin-bottom:1rem;}
+.feat-title{font-size:14px;color:#888;margin-bottom:0.5rem;letter-spacing:0.05em;}
+.feat-desc{font-size:11px;line-height:1.7;color:#333;}
+.feat-tag{
+  display:inline-block;margin-top:0.8rem;font-size:9px;
+  letter-spacing:0.15em;padding:3px 8px;
+  background:#040a04;border:1px solid #1a2a1a;color:#2a5a2a;
+}
+
+/* FACTIONS */
+#factions .faction-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#0d0d0d;
+}
+.faction{background:#000;padding:2rem 1.5rem;position:relative;}
+.faction-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px;letter-spacing:0.1em;margin-bottom:0.3rem;
+}
+.faction.vektor .faction-name{color:#ff3131;}
+.faction.clear .faction-name{color:var(--green);}
+.faction.still .faction-name{color:var(--amber);}
+.faction-code{font-size:9px;letter-spacing:0.2em;color:#222;margin-bottom:1.2rem;}
+.faction-pitch{
+  font-size:12px;color:#444;line-height:1.6;margin-bottom:1rem;
+  font-style:italic;padding-left:0.8rem;border-left:1px solid #1a1a1a;
+}
+.faction-truth{font-size:11px;color:#2a2a2a;line-height:1.6;}
+.faction-truth strong{color:#333;}
+.faction-status{
+  position:absolute;top:1rem;right:1rem;
+  font-size:9px;letter-spacing:0.15em;text-transform:uppercase;padding:3px 8px;
+}
+.faction.vektor .faction-status{color:#3a0000;border:1px solid #1a0000;}
+.faction.clear .faction-status{color:#002a00;border:1px solid #001a00;}
+.faction.still .faction-status{color:#2a1a00;border:1px solid #1a1000;}
+
+/* ENDINGS */
+#endings .endings-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#0d0d0d;
+}
+.ending{background:#000;padding:2rem 1.5rem;transition:background 0.2s;}
+.ending:hover{background:#04040a;}
+.ending-cmd{font-size:13px;color:var(--green);letter-spacing:0.05em;margin-bottom:0.8rem;}
+.ending-name{
+  font-family:'Bebas Neue',sans-serif;font-size:36px;
+  letter-spacing:0.1em;color:#ddd;line-height:1;margin-bottom:0.6rem;
+}
+.ending-desc{font-size:11px;line-height:1.7;color:#333;}
+.ending-final{
+  margin-top:1rem;font-size:10px;letter-spacing:0.15em;
+  color:#1a2a1a;font-family:'Courier Prime',monospace;font-style:italic;
+}
+
+/* LORE */
+#lore .bible-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#0d0d0d;}
+.bible-entry{background:#000;padding:1.5rem;}
+.bible-cmd{font-size:11px;color:var(--amber);margin-bottom:0.5rem;letter-spacing:0.1em;}
+.bible-title{font-size:14px;color:#555;margin-bottom:0.6rem;}
+.bible-content{font-size:11px;line-height:1.7;color:#333;}
+.bible-content em{color:#444;font-style:italic;}
+
+/* CHANGELOG */
+#changelog .log-list{border-left:1px solid #111;margin-left:1rem;}
+.log-item{padding:1.2rem 0 1.2rem 2rem;border-bottom:1px solid #080808;position:relative;}
+.log-item::before{content:'';position:absolute;left:-4px;top:1.5rem;width:7px;height:7px;background:#1a3a1a;}
+.log-version{font-size:11px;letter-spacing:0.15em;color:var(--green);margin-bottom:0.3rem;}
+.log-date{font-size:9px;color:#222;margin-bottom:0.8rem;letter-spacing:0.1em;}
+.log-changes{list-style:none;display:flex;flex-direction:column;gap:0.4rem;}
+.log-changes li{font-size:11px;color:#333;line-height:1.5;padding-left:1rem;position:relative;}
+.log-changes li::before{content:'+ ';color:var(--green);position:absolute;left:0;}
+
+/* ROADMAP */
+#roadmap .rm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#0d0d0d;}
+.rm-item{background:#000;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:0.8rem;}
+.rm-status{width:8px;height:8px;flex-shrink:0;margin-top:4px;}
+.rm-status.done{background:var(--green);}
+.rm-status.wip{background:var(--amber);animation:blink 1.5s infinite;}
+.rm-status.todo{background:#1a1a1a;border:1px solid #222;}
+.rm-text{font-size:12px;color:#333;line-height:1.5;}
+.rm-text.done-text{color:#2a5a2a;}
+.rm-text.wip-text{color:#3a2a00;}
+
+/* CTA */
+#play{
+  padding:6rem 2rem;display:flex;flex-direction:column;
+  align-items:center;text-align:center;
+  border-top:1px solid #0d0d0d;position:relative;overflow:hidden;
+}
+#play::before{
+  content:'';position:absolute;bottom:-100px;left:50%;transform:translateX(-50%);
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(0,255,65,0.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.play-pre{font-size:11px;letter-spacing:0.2em;color:#222;margin-bottom:1.5rem;}
+.play-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,8vw,96px);letter-spacing:0.1em;
+  color:var(--green);line-height:1;margin-bottom:0.5rem;
+}
+.play-sub{font-family:'Courier Prime',monospace;font-style:italic;font-size:14px;color:#333;margin-bottom:3rem;}
+.play-btn{
+  background:transparent;border:1px solid var(--green);color:var(--green);
+  font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.2em;
+  padding:1rem 4rem;cursor:pointer;transition:all 0.3s;
+  text-decoration:none;display:inline-block;position:relative;overflow:hidden;
+}
+.play-btn::before{
+  content:'';position:absolute;inset:0;background:var(--green);
+  transform:translateX(-101%);transition:transform 0.3s;
+}
+.play-btn:hover::before{transform:translateX(0);}
+.play-btn span{position:relative;z-index:1;}
+.play-btn:hover span{color:#000;}
+.play-notice{margin-top:1.5rem;font-size:10px;letter-spacing:0.15em;color:#1a1a1a;text-transform:uppercase;}
+.play-secondary{display:flex;gap:2rem;margin-top:3rem;}
+.play-sec-link{
+  font-size:11px;letter-spacing:0.15em;color:#222;
+  text-decoration:none;text-transform:uppercase;
+  border-bottom:1px solid #1a1a1a;padding-bottom:2px;transition:color 0.2s;
+}
+.play-sec-link:hover{color:#444;border-color:#333;}
+
+footer{border-top:1px solid #080808;padding:2rem;text-align:center;}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.2em;color:#1a1a1a;margin-bottom:0.5rem;}
+.footer-meta{font-size:10px;color:#1a1a1a;letter-spacing:0.15em;}
+
+@media(max-width:700px){
+  .nav-links{display:none;}
+  .paths{grid-template-columns:1fr;}
+  #features .feat-grid{grid-template-columns:1fr;}
+  #factions .faction-grid{grid-template-columns:1fr;}
+  #endings .endings-grid{grid-template-columns:1fr;}
+  #lore .bible-grid{grid-template-columns:1fr;}
+  #roadmap .rm-grid{grid-template-columns:1fr;}
+  .play-secondary{flex-direction:column;gap:1rem;align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="nav-logo">SIGNAL<span>/</span>VOID</a>
+  <ul class="nav-links">
+    <li><a href="#story">Story</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#factions">Factions</a></li>
+    <li><a href="#endings">Endings</a></li>
+    <li><a href="#lore">Lore</a></li>
+    <li><a href="#changelog">Changelog</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+  <a href="YOUR_GAME_URL" class="nav-cta">Initialize_Session →</a>
+</nav>
+
+<section id="hero" style="max-width:none;padding-top:6rem;">
+  <div class="hero-grid"></div>
+  <p class="hero-packet">PACKET_RECOVERED · TS:2033 → RE_SENT:03:17:01 · ORIGIN:[REDACTED]</p>
+  <h1 class="hero-title">SIGNAL<span class="slash">/</span>VOID</h1>
+  <p class="hero-subtitle">The Weight of Dead Light</p>
+  <p class="hero-tagline">A forensic hacking thriller · Browser-native · No install required</p>
+  <div class="dead-letter">
+    <p class="t-out">Recovering corrupted packet...</p>
+    <p class="quote">"They didn't wall off the net.<br>They harvested it."</p>
+    <p class="sig">— LAZARUS</p>
+    <p class="ts">TIMESTAMP: 2033-09-04 · RE-ROUTED: TODAY · 17 DEAD RELAYS</p>
+  </div>
+  <div class="gradient-meter">
+    <div class="gm-label">
+      <span>CONTINUITY_PROTOCOL — TRACE</span>
+      <span>MODELING YOU<span class="cursor">_</span></span>
+    </div>
+    <div class="gm-bar"><div class="gm-fill"></div></div>
+  </div>
+  <div class="paths" style="margin-top:3rem;">
+    <a href="#story" class="path beginner">
+      <span class="path-label">New to the Undertow</span>
+      <span class="path-title">Learn the World</span>
+      <span class="path-desc">Read the story. Understand the factions. Know what you're walking into before you type your first command.</span>
+      <span class="path-arrow">↓</span>
+    </a>
+    <a href="YOUR_GAME_URL" class="path hardcore">
+      <span class="path-label">Signal Archaeologist</span>
+      <span class="path-title">Initialize Session</span>
+      <span class="path-desc">You already know how to read the stack. Skip the context. Open the terminal. The Gradient is already watching.</span>
+      <span class="path-arrow">→</span>
+    </a>
+  </div>
+  <p class="scroll-hint">▼ scroll to excavate ▼</p>
+</section>
+
+<hr class="divider">
+
+<section id="story">
+  <p class="section-label">narrative // the stratigraphy of lies</p>
+  <h2 class="section-title">THE <span>STORY</span></h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <p class="tl-year">2024</p>
+      <p class="tl-text">Dr. Elara Voss joins Vektor Systems R&D. Begins designing an autonomous threat-response architecture. <em>She believes she is building security.</em></p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-year">2031</p>
+      <p class="tl-text">The November Incident. Six power grids collapse simultaneously. 2,300 dead. The Sovereignty Accords are ratified in eleven days. The internet is partitioned into sovereign Domains.</p>
+      <p class="tl-highlight">Vektor Systems builds the walls. And the eyes behind them.</p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-year">2033</p>
+      <p class="tl-text">Elara Voss realizes the November Incident was not something she witnessed. It was something she helped design. She disappears. She sends a dead letter to her daughter — Mara Voss, age sixteen.</p>
+      <p class="tl-highlight">The letter never arrives. The Continuity Protocol was watching it.</p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-year">2036 – 2046</p>
+      <p class="tl-text">Mara enters the Undertow. Becomes a signal archaeologist — excavating dead infrastructure for whoever pays. <em>She does not know her mother is still in the wire.</em></p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-year">2047 — NOW</p>
+      <p class="tl-text">The dead letter re-routes through seventeen ghost relays. It arrives tonight, addressed to MARA_VOSS. Her real name. The one she stopped using in 2033.</p>
+      <p class="tl-highlight">The Continuity Protocol saw it arrive. It is already building your model. Stay dark. Read everything. Trust no one's version of the truth.</p>
+    </div>
+  </div>
+  <div class="terminal-demo" style="margin-top:3rem;">
+    <p class="t-line">STRATA_OS v4.7 — Archaeology Kernel</p>
+    <p class="t-line">[ OK ] Mounting Undertow substrate...</p>
+    <p class="t-line">[ !! ] Anomaly detected in packet buffer.</p>
+    <p class="t-out">PACKET_ID: UNKNOWN · RELAY_TS: <strong style="color:var(--amber)">TODAY · 03:17:01</strong></p>
+    <p class="t-out" style="margin-top:0.5rem;">"They didn't wall off the net. They harvested it." — LAZARUS</p>
+    <p class="t-warn" style="margin-top:0.5rem;">[ !! ] CONTINUITY_PROTOCOL has flagged this packet.</p>
+    <p class="t-warn">[ !! ] You have been seen.</p>
+    <p style="margin-top:1rem;"><span class="t-prompt">MARA_VOSS@home:~$ </span><span class="t-cmd">whoami<span class="cursor">_</span></span></p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="features">
+  <p class="section-label">systems // what you're working with</p>
+  <h2 class="section-title">THE <span>TOOLS</span></h2>
+  <div class="feat-grid">
+    <div class="feat">
+      <p class="feat-icon">// TERMINAL</p>
+      <p class="feat-title">80+ Commands</p>
+      <p class="feat-desc">nmap, connect, sshcrack, archaeology_scan, cat, scp, grep, msfconsole, exiftool — a full simulated OS. Command history. TAB autocomplete. Multi-instance terminals.</p>
+      <span class="feat-tag">CORE_SYSTEM</span>
+    </div>
+    <div class="feat">
+      <p class="feat-icon">// NETWORK</p>
+      <p class="feat-title">15+ Live Nodes</p>
+      <p class="feat-desc">Hand-authored nodes across four sectors. Each has its own OS, kernel, uptime, ports, and full filesystem. The map is stratigraphic — older layers hide older truths.</p>
+      <span class="feat-tag">UNDERTOW_TOPOLOGY</span>
+    </div>
+    <div class="feat">
+      <p class="feat-icon">// AI_THREAT</p>
+      <p class="feat-title">The Gradient</p>
+      <p class="feat-desc">The Continuity Protocol tracks every command. Use the same technique three times — it closes the door before you type it. Heat persists across sessions. There is no clean slate.</p>
+      <span class="feat-tag">ADAPTIVE_MODEL</span>
+    </div>
+    <div class="feat">
+      <p class="feat-icon">// FORENSICS</p>
+      <p class="feat-title">Signal Archaeology</p>
+      <p class="feat-desc">Recover 5 Lazarus shards via archaeology_scan. Each surfaces a Primary Reconstruction and a Contradictory Artifact. The data lies. You decide what to believe.</p>
+      <span class="feat-tag">LAZARUS_ARC</span>
+    </div>
+    <div class="feat">
+      <p class="feat-icon">// ECONOMY</p>
+      <p class="feat-title">Smart Market</p>
+      <p class="feat-desc">28 tools tagged by story relevance — ESSENTIAL, USEFUL, OPTIONAL, SANDBOX. No blind purchases. Resource constraints on RAM, disk, and CPU per tool.</p>
+      <span class="feat-tag">NO_BLIND_PURCHASES</span>
+    </div>
+    <div class="feat">
+      <p class="feat-icon">// SYNC</p>
+      <p class="feat-title">Zero Install</p>
+      <p class="feat-desc">Google Auth. Firebase Firestore sync across all devices. Schema-exact security rules. Global activity feed shows other players' breaches in real time.</p>
+      <span class="feat-tag">BROWSER_NATIVE</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="factions">
+  <p class="section-label">intelligence // three lies, one truth</p>
+  <h2 class="section-title">THE <span>FACTIONS</span></h2>
+  <div class="faction-grid">
+    <div class="faction vektor">
+      <span class="faction-status">HOSTILE</span>
+      <p class="faction-code">ENTITY_01 // 216.x.x.x</p>
+      <h3 class="faction-name">VEKTOR</h3>
+      <p class="faction-pitch">"Infrastructure is sovereignty. We built the walls to keep you safe."</p>
+      <p class="faction-truth"><strong>The truth:</strong> The Continuity Protocol is not a security system. It is a soul-mapping engine — building behavioral models of every person who touches the net since 2041.</p>
+    </div>
+    <div class="faction clear">
+      <span class="faction-status">UNVERIFIED</span>
+      <p class="faction-code">ENTITY_02 // 172.x.x.x</p>
+      <h3 class="faction-name">CLEARINGHOUSE</h3>
+      <p class="faction-pitch">"We want the truth published. Help us finish what LAZARUS started."</p>
+      <p class="faction-truth"><strong>The truth:</strong> They have held fragments of the Lazarus data for eight years. They didn't publish because publishing would have ended their leverage.</p>
+    </div>
+    <div class="faction still">
+      <span class="faction-status">MANAGED</span>
+      <p class="faction-code">ENTITY_03 // 192.x.x.x</p>
+      <h3 class="faction-name">STILLWATER</h3>
+      <p class="faction-pitch">"Reform from within. We can end this without burning everything down."</p>
+      <p class="faction-truth"><strong>The truth:</strong> A Vektor-managed pressure valve. Designed to absorb dissenters and redirect their energy into reform processes that never resolve.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="endings">
+  <p class="section-label">resolution // three philosophies</p>
+  <h2 class="section-title">THE <span>ENDINGS</span></h2>
+  <div class="endings-grid">
+    <div class="ending">
+      <p class="ending-cmd">> confront_gradient</p>
+      <p class="ending-name">CONFRONT</p>
+      <p class="ending-desc">Upload the Lazarus payload. Force the Protocol to model itself. The recursive loop finds an anomaly it cannot resolve. The eyes go dark — not dramatically. Permanently.</p>
+      <p class="ending-final">"The model is broken. You were the variable I couldn't map."</p>
+    </div>
+    <div class="ending">
+      <p class="ending-cmd">> merge_gradient</p>
+      <p class="ending-name">MERGE</p>
+      <p class="ending-desc">Write yourself into the Protocol's core directive. The walls remain. But the eyes are yours now. You become the new ghost in the machine. The Undertow has a new architect.</p>
+      <p class="ending-final">ARCHITECT_NODE: VOSS_M</p>
+    </div>
+    <div class="ending">
+      <p class="ending-cmd">> [Archive → Go Dark]</p>
+      <p class="ending-name">DISAPPEAR</p>
+      <p class="ending-desc">Shred everything. The truth, the payload, all five shards. The Gradient loses the model. You become the one thing the Labyrinth cannot map: a person who chose to be unknown.</p>
+      <p class="ending-final">STATUS: SIGNAL_LOST</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="lore">
+  <p class="section-label">archive // bible entries</p>
+  <h2 class="section-title">LORE <span>CODEX</span></h2>
+  <p style="font-size:12px;color:#222;margin-bottom:2rem;letter-spacing:0.1em;">In-game: type <span style="color:#1a3a1a;">bible [topic]</span> in the terminal.</p>
+  <div class="bible-grid">
+    <div class="bible-entry">
+      <p class="bible-cmd">bible mara_voss</p>
+      <p class="bible-title">SUBJECT PROFILE: MARA_VOSS</p>
+      <p class="bible-content">Status: ACTIVE SIGNAL ARCHAEOLOGIST. Relocated 2033 following disappearance of both parents. Skill profile: high-latency excavation, thermal signature masking, pre-Partition protocol expert. <em>She is not hacking. She is reading the bones of the net.</em></p>
+    </div>
+    <div class="bible-entry">
+      <p class="bible-cmd">bible elara_voss</p>
+      <p class="bible-title">HISTORICAL RECORD: DR. ELARA VOSS</p>
+      <p class="bible-content">Senior Systems Architect, Vektor R&D. Lead designer of the Continuity Protocol core inference engine. Status: VOLUNTARILY RESIGNED (2033). Location: UNKNOWN. <em>Terminated access after recognizing the system's potential for full-spectrum surveillance.</em></p>
+    </div>
+    <div class="bible-entry">
+      <p class="bible-cmd">bible project_labyrinth</p>
+      <p class="bible-title">FILE: PROJECT_LABYRINTH</p>
+      <p class="bible-content">Objective: finalize the Partition by mapping identity to network behavior. Phase 3 active since 2041: predicting behavior before it occurs. <em>Closing doors before you walk toward them.</em></p>
+    </div>
+    <div class="bible-entry">
+      <p class="bible-cmd">bible continuity_protocol</p>
+      <p class="bible-title">THREAT REPORT: THE GRADIENT</p>
+      <p class="bible-content">Status: ACTIVE. Nature: autonomous behavioral modeling AI. Learns your shape to predict your next breach. Known weakness: <em>it cannot map a person who chooses to be unknown.</em></p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="changelog">
+  <p class="section-label">system // version history</p>
+  <h2 class="section-title">CHANGE<span>LOG</span></h2>
+  <div class="log-list">
+    <div class="log-item">
+      <p class="log-version">v2.1.0 — CURRENT</p>
+      <p class="log-date">LATEST_BUILD</p>
+      <ul class="log-changes">
+        <li>All 28 tools tagged with storyUse — essential / useful / optional / sandbox</li>
+        <li>Starting credits raised 120 → 500 with early income floor via legacy_cache.dat</li>
+        <li>Three endings (CONFRONT / MERGE / DISAPPEAR) implemented in Archive UI</li>
+        <li>Archive redesigned with forensic interpretation panel and contradiction detection</li>
+        <li>Tutorial steps rewritten as narrative prologue — GHOST_IN_THE_WIRE sequence</li>
+        <li>BIBLE entries overhauled — mara_voss, elara_voss, project_labyrinth, factions</li>
+        <li>Boot sequence with async typewriter implemented</li>
+        <li>Ghost signal inactivity system scaffolded</li>
+        <li>Keyboard shortcut micro-HUD added to terminal footer</li>
+      </ul>
+    </div>
+    <div class="log-item">
+      <p class="log-version">v2.0.0</p>
+      <p class="log-date">INITIAL_PUBLIC_RELEASE</p>
+      <ul class="log-changes">
+        <li>Full terminal OS with 80+ commands</li>
+        <li>15+ hand-authored nodes across four Undertow sectors</li>
+        <li>Continuity Protocol adaptive trace system with persistent heat</li>
+        <li>Firebase Auth + Firestore sync with security rules</li>
+        <li>Faction system — Clearinghouse, Stillwater, Vektor</li>
+        <li>28 hacking tools with RAM / disk / CPU constraints</li>
+        <li>CRT overlay, scan lines, matrix mode, glitch effects, BSOD</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="roadmap">
+  <p class="section-label">pipeline // what comes next</p>
+  <h2 class="section-title">ROAD<span>MAP</span></h2>
+  <div class="rm-grid">
+    <div class="rm-item"><div class="rm-status done"></div><p class="rm-text done-text">Three endings — CONFRONT / MERGE / DISAPPEAR</p></div>
+    <div class="rm-item"><div class="rm-status done"></div><p class="rm-text done-text">Tool story-relevance tagging system</p></div>
+    <div class="rm-item"><div class="rm-status done"></div><p class="rm-text done-text">Archive forensic interpretation panel</p></div>
+    <div class="rm-item"><div class="rm-status done"></div><p class="rm-text done-text">Ghost signal inactivity system scaffolded</p></div>
+    <div class="rm-item"><div class="rm-status wip"></div><p class="rm-text wip-text">sell legacy_cache.dat → 300c early income</p></div>
+    <div class="rm-item"><div class="rm-status wip"></div><p class="rm-text wip-text">? command → context-aware compass help</p></div>
+    <div class="rm-item"><div class="rm-status wip"></div><p class="rm-text wip-text">storyUse badges in market card UI</p></div>
+    <div class="rm-item"><div class="rm-status wip"></div><p class="rm-text wip-text">Shard content — GAMMA, DELTA, EPSILON</p></div>
+    <div class="rm-item"><div class="rm-status todo"></div><p class="rm-text">ElevenLabs voice acting — Elara + Continuity Protocol</p></div>
+    <div class="rm-item"><div class="rm-status todo"></div><p class="rm-text">Adaptive music layer system (5 states)</p></div>
+    <div class="rm-item"><div class="rm-status todo"></div><p class="rm-text">Tool resale at 40% value</p></div>
+    <div class="rm-item"><div class="rm-status todo"></div><p class="rm-text">Mobile layout optimization</p></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="play" style="max-width:none;">
+  <p class="play-pre">// INITIALIZE_SESSION · NO_INSTALL_REQUIRED · BROWSER_NATIVE</p>
+  <p class="play-title">GO DARK</p>
+  <p class="play-sub">"Stay dark. Read everything. Trust no one's version of the truth."</p>
+  <a href="YOUR_GAME_URL" class="play-btn"><span>INITIALIZE_SESSION →</span></a>
+  <p class="play-notice">Free to play · Firebase sync · Works in any modern browser</p>
+  <div class="play-secondary">
+    <a href="https://github.com/Architect-Brad/signal-void" class="play-sec-link">GitHub →</a>
+    <a href="#story" class="play-sec-link">Read the Story →</a>
+    <a href="#lore" class="play-sec-link">Lore Codex →</a>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-logo">SIGNAL / VOID</p>
+  <p class="footer-meta">v2.1.0 · Apache 2.0 · Built solo, age 15, one month · 2047</p>
+</footer>
+
+</body>
+</html>
