@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "UserSave": {
+      "title": "User Game Save",
+      "description": "Stores the complete progress and state of a player's game.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user." },
+        "credits": { "type": "number", "description": "Current available credits." },
+        "reputation": { "type": "number", "description": "Current reputation score." },
+        "heat": { "type": "number", "description": "Current heat level." },
+        "inventory": { "type": "array", "items": { "type": "string" }, "description": "List of owned tool IDs." },
+        "nodes": { "type": "object", "description": "State of all discovered/unlocked nodes." },
+        "bots": { "type": "array", "description": "List of active bots and their status." },
+        "userServers": { "type": "array", "description": "List of rented or owned servers." },
+        "missions": { "type": "array", "description": "Progress of various missions." },
+        "activeMissionId": { "type": "string", "description": "Current active mission ID." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last save timestamp." }
+      },
+      "required": ["userId", "credits", "updatedAt"]
+    },
+    "GlobalActivity": {
+      "title": "Global System Activity",
+      "description": "Public broadcasts of hacking events.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "username": { "type": "string" },
+        "event": { "type": "string" },
+        "target": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["username", "event", "target", "timestamp"]
+    },
+    "Exploit": {
+      "title": "Protocol Exploit",
+      "description": "Definition of a specialized exploit targeting specific security protocols.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "targetProtocol": { "type": "string", "description": "The security protocol this exploit bypasses (e.g., VOID_PULSE, HYDRA_CORE)." },
+        "cost": { "type": "number" },
+        "tier": { "type": "number", "description": "1, 2, or 3 based on effectiveness." },
+        "category": { "type": "string", "enum": ["BUFFER_OVERFLOW", "SQL_INJECTION", "ZERO_DAY", "SOCIAL_ENGINEERING"] }
+      },
+      "required": ["id", "name", "targetProtocol", "cost"]
+    }
+  },
+  "firestore": {
+    "/saves/{userId}": {
+      "schema": "UserSave",
+      "description": "Collection of user save states indexed by user UID."
+    },
+    "/activity/{activityId}": {
+      "schema": "GlobalActivity",
+      "description": "Stream of global hacking events."
+    },
+    "/exploits/{exploitId}": {
+      "schema": "Exploit",
+      "description": "A public repository of available exploits."
+    }
+  }
+}

@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Pillar 2: Validation Blueprints
+    function isValidSave(data) {
+      return data.keys().hasAll(['userId', 'credits', 'reputation', 'heat', 'inventory', 'nodes', 'bots', 'userServers', 'missions', 'activeMissionId', 'updatedAt']) &&
+             data.keys().size() == 11 &&
+             data.userId == request.auth.uid &&
+             data.credits is number &&
+             data.reputation is number &&
+             data.heat is number &&
+             data.inventory is list &&
+             data.inventory.size() <= 50 &&
+             data.nodes is map &&
+             data.bots is list &&
+             data.userServers is list &&
+             data.missions is list &&
+             data.activeMissionId is string &&
+             data.activeMissionId.size() <= 64 &&
+             data.updatedAt == request.time;
+    }
+
+    function isValidActivity(data) {
+      return data.keys().hasAll(['userId', 'username', 'event', 'target', 'timestamp']) &&
+             data.keys().size() == 5 &&
+             data.userId == request.auth.uid &&
+             data.username is string &&
+             data.username.size() <= 32 &&
+             data.event is string &&
+             data.event.size() <= 64 &&
+             data.target is string &&
+             data.target.size() <= 64 &&
+             data.timestamp == request.time;
+    }
+
+    // Phase 4: Match Blocks
+    
+    // Saves Collection
+    match /saves/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow create: if isOwner(userId) && isValidId(userId) && isValidSave(incoming());
+      allow update: if isOwner(userId) && isValidId(userId) && isValidSave(incoming()) && (
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'credits', 'reputation', 'heat', 'inventory', 'nodes', 'bots', 'userServers', 'missions', 'activeMissionId', 'updatedAt'
+        ])
+      );
+      allow delete: if false;
+    }
+
+    // Global Activity Feed
+    match /activity/{activityId} {
+      // Pillar 8: Secure List Queries
+      allow list: if request.query.limit <= 20; // Public feed
+      allow get: if true;
+      
+      allow create: if isSignedIn() && isValidActivity(incoming());
+      allow update, delete: if false;
+    }
+
+    // Exploit Database (Public Catalog)
+    match /exploits/{exploitId} {
+      allow list: if request.query.limit <= 50; // Public repository
+      allow get: if true;
+      allow write: if false; // System-populated only
+    }
+  }
+}
