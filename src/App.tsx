@@ -1826,41 +1826,50 @@ export default function App() {
   const [inGameDate, setInGameDate] = useState(new Date(2047, 4, 17, 12, 0, 0)); // Year 2047, May 17th
   const [showCalendar, setShowCalendar] = useState(false);
 
-  // Bot Processing Logic
+  // Bot Processing Logic - OPTIMIZED: Single interval with batched updates
   useEffect(() => {
     const interval = setInterval(() => {
       if (bots.length === 0) return;
 
-      setBots(prev => prev.map(bot => {
-        // Chance to get compromised based on ISP tier of target
-        const targetNode = nodes[bot.targetNodeId];
-        let compromiseChance = 0.001; 
-        if (targetNode?.ispTier === 'BACKBONE') compromiseChance = 0.05;
-        else if (targetNode?.ispTier === 'TIER_1') compromiseChance = 0.01;
+      setBots(prev => {
+        let creditsDelta = 0;
+        let traceReduction = 0;
+        let heatReduction = 0;
+        
+        const updated = prev.map(bot => {
+          const targetNode = nodes[bot.targetNodeId];
+          let compromiseChance = 0.001;
+          if (targetNode?.ispTier === 'BACKBONE') compromiseChance = 0.05;
+          else if (targetNode?.ispTier === 'TIER_1') compromiseChance = 0.01;
 
-        if (Math.random() < compromiseChance && bot.status === 'ACTIVE') {
-          return { ...bot, status: 'COMPROMISED' as const };
-        }
-        return bot;
-      }));
-
-      // Active Bot Rewards
-      bots.forEach(bot => {
-        if (bot.status !== 'ACTIVE') return;
-
-        if (bot.type === 'MINING') {
-          const reward = 1 * bot.efficiency;
-          setCredits(prev => prev + reward);
-        } else if (bot.type === 'PROTECT') {
-          setTraceProgress(prev => Math.max(0, prev - 0.1 * bot.efficiency));
-          setHeat(prev => Math.max(0, prev - 0.05 * bot.efficiency));
-        }
+          if (Math.random() < compromiseChance && bot.status === 'ACTIVE') {
+            return { ...bot, status: 'COMPROMISED' as const };
+          }
+          
+          // Calculate rewards in same pass
+          if (bot.status === 'ACTIVE') {
+            if (bot.type === 'MINING') {
+              creditsDelta += 1 * bot.efficiency;
+            } else if (bot.type === 'PROTECT') {
+              traceReduction += 0.1 * bot.efficiency;
+              heatReduction += 0.05 * bot.efficiency;
+            }
+          }
+          return bot;
+        });
+        
+        // Batch credit/trace/heat updates
+        if (creditsDelta !== 0) setCredits(c => c + creditsDelta);
+        if (traceReduction > 0) setTraceProgress(t => Math.max(0, t - traceReduction));
+        if (heatReduction > 0) setHeat(h => Math.max(0, h - heatReduction));
+        
+        return updated;
       });
     }, 2000);
     return () => clearInterval(interval);
-  }, [bots, nodes]);
+  }, [bots.length, nodes]); // Optimized deps
 
-  // Server Revenue & Maintenance Cycle
+  // Server Revenue & Maintenance Cycle - OPTIMIZED: Reduced state updates
   useEffect(() => {
     const interval = setInterval(() => {
       if (userServers.length === 0) return;
@@ -1877,7 +1886,7 @@ export default function App() {
       }
     }, 10000); // Every 10 seconds
     return () => clearInterval(interval);
-  }, [userServers]);
+  }, [userServers.length]); // Optimized deps
 
   // In-Game Time Update
   useEffect(() => {
